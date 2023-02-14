@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Listen Wave Equation{% endblock %}
+
+{% block additional_header %}
+<script src="./bundle.js"></script>
+{% endblock %}
+  
+{% block content %}
+{% include 'include/header.html' %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+      <div>
+	<!-- ここに内容 -->
+      </div>
+    </div>
+    <div class="col-2"></div>
+  </div>
+</div>
+<div style="height: 2.5cm"></div>
+{% endblock %}
