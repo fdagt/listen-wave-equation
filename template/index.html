@@ -12,6 +12,9 @@
   <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
+      <div class="my-3 text-center">
+	{% include 'include/formula.html' %}
+      </div>
       <div>
 	<form onsubmit="return false;" oninput="onParameterChanged(stringLength, waveVelocity, isDamping, halfLife, fundamentalFrequency, pickup)">
 	  <!-- 弦長 -->
