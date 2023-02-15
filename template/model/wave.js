@@ -63,35 +63,3 @@ class Wave {
 }
 
 const samplePerSec = 32000;
-
-function displacementToWave(u, len, progressCallback=(p)=>{}) {
-    const wave = new Wave(samplePerSec, Math.floor(samplePerSec * len));
-    let initialSamples = new Array(1000);
-    let amplitude = 0;
-    for (let i = 0; i < 1000; ++i) {
-	initialSamples[i] = u(i / wave.samplePerSec);
-	amplitude = Math.max(amplitude, initialSamples[i]);
-    }
-    amplitude *= 1.1;
-    const buffer = wave.dataBuffer;
-    if (amplitude === 0) {
-	buffer.fill(0);
-	return wave;
-    }
-    for (let i = 0; i < Math.min(1000, wave.sampleCount); ++i)
-	Wave.writeInt16(buffer, i * 2, scaleDisplacement(initialSamples[i], amplitude))
-    initialSamples = null;
-    for (let i = 1000, j = 1000; i < wave.sampleCount; ++i, ++j) {
-	if (j === 5000) {
-	    j = 0;
-	    progressCallback(i * 100 / wave.sampleCount);
-	}
-	Wave.writeInt16(buffer, i * 2, scaleDisplacement(u(i / wave.samplePerSec), amplitude));
-    }
-    progressCallback(100);
-    return wave;
-}
-
-function scaleDisplacement(u, amplitude) {
-    return Math.floor(32767.5 * u / amplitude - 0.5);
-}

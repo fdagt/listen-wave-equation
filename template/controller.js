@@ -131,3 +131,39 @@ function initializeGraph(id) {
     const state = new GraphState(id);
     graphStates[id] = state;
 }
+
+let prevObjectURL = null;
+function onOutputButtonClicked() {
+    const stringLength = document.getElementById("parameter-string-length").value - 0;
+    const waveVelocity = document.getElementById("parameter-wave-velocity").value - 0;
+    const isDamping = document.getElementById("parameter-is-damping").checked;
+    const halfLife = document.getElementById("parameter-half-life").value - 0;
+    const damp = halfLifeToDampingCoefficient(halfLife);
+    const pickup = document.getElementById("parameter-pickup").value - 0;
+    const displacement = graphStates['initial-condition-displacement-svg'].getPoints().map((p) => [p[0] * stringLength, p[1]]);
+    const derivative = graphStates['initial-condition-derivative-svg'].getPoints().map((p) => [p[0] * stringLength, 500 * p[1]]);
+    const progressBar = document.getElementById("calculation-progress-bar");
+    const player = document.getElementById("audio-player");
+    initializeProgressBar(progressBar);
+    if (!isValidParameters(stringLength, waveVelocity, isDamping, damp)) {
+	progressBar.classList.add("bg-danger");
+	progressBar.style.width = "100%";
+	alert("パラメーターがー不正です。");
+	return;
+    }
+    progressBar.classList.add("bg-primary");
+    const blob = solveWaveEquation(stringLength, waveVelocity, isDamping, damp, pickup * stringLength / 100, displacement, derivative, 3, (progress) => {
+	progressBar.style.width = progress;
+    });
+    if (prevObjectURL !== null)
+	URL.revokeObjectURL(prevObjectURL);
+    prevObjectURL = URL.createObjectURL(blob);
+    player.src = prevObjectURL;
+    player.style.visibility = "visible";
+}
+
+function initializeProgressBar(bar) {
+    bar.classList.remove("bg-danger");
+    bar.classList.remove("bg-primary");
+    bar.style.width = "0%";
+}
