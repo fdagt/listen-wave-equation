@@ -151,6 +151,7 @@ function onOutputButtonClicked() {
     const halfLife = document.getElementById("parameter-half-life").value - 0;
     const damp = halfLifeToDampingCoefficient(halfLife);
     const pickup = document.getElementById("parameter-pickup").value - 0;
+    const clipLength = document.getElementById("parameter-clip-length").value - 0;
     const displacement = graphStates['initial-condition-displacement-svg'].getPoints().map((p) => [p[0] * stringLength, p[1]]);
     const derivative = graphStates['initial-condition-derivative-svg'].getPoints().map((p) => [p[0] * stringLength, 500 * p[1]]);
     const progressBar = document.getElementById("calculation-progress-bar");
@@ -163,7 +164,7 @@ function onOutputButtonClicked() {
 	return;
     }
     progressBar.classList.add("bg-primary");
-    const blob = solveWaveEquation(stringLength, waveVelocity, isDamping, damp, pickup * stringLength / 100, displacement, derivative, 3, (progress) => {
+    const blob = solveWaveEquation(stringLength, waveVelocity, isDamping, damp, pickup * stringLength / 100, displacement, derivative, clipLength, (progress) => {
 	progressBar.style.width = progress;
     });
     if (prevObjectURL !== null)
