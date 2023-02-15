@@ -1,0 +1,21 @@
+<svg id="{{ svg_id }}" width="100%" height="5cm">
+  <!-- 軸やラベルなど -->
+  <g>
+    <line x1="0%" y1="50%" x2="100%" y2="50%" stroke="silver"></line>
+    {% for i in range(1, 8) %}
+    <line x1="{{ i * 12.5 }}%" y1="2.35cm" x2="{{ i * 12.5 }}%" y2="2.65cm" stroke="silver"></line>
+    {% endfor %}
+    <g class="user-select-none">
+      <text x="0%" y="2.65cm" text-anchor="start" dominant-baseline="hanging" transform="translate(4)">0</text>
+      <text x="50%" y="2.65cm" text-anchor="middle" dominant-baseline="hanging">L/2</text>
+      <text x="100%" y="2.65cm" text-anchor="end" dominant-baseline="hanging" transform="translate(-4)">L</text>
+    </g>
+  </g>
+  <!-- エッジ -->
+  <g class="graph-edges">
+  </g>
+  <!-- ノード -->
+  <g class="graph-nodes">
+  </g>
+</svg>
+<script>initializeGraph("{{ svg_id }}");</script>
