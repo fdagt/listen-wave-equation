@@ -3,6 +3,7 @@ function onParameterChanged(stringLength, waveVelocity, isDamping, halfLife, fun
     fundamentalFrequency.value = WaveSolver.fundamentalFrequency(stringLength.value - 0, waveVelocity.value - 0, isDamping.checked ? halfLifeToDampingCoefficient(halfLife.value - 0) : 0).toFixed(3);
     for (const state of Object.values(graphStates))
 	state.setPickup(pickup.value-0 + "%");
+    halfLife.disabled = !isDamping.checked;
 }
 
 function initializeParameterInput() {
