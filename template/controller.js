@@ -1,6 +1,8 @@
 
-function onParameterChanged(stringLength, waveVelocity, isDamping, halfLife, fundamentalFrequency) {
+function onParameterChanged(stringLength, waveVelocity, isDamping, halfLife, fundamentalFrequency, pickup) {
     fundamentalFrequency.value = WaveSolver.fundamentalFrequency(stringLength.value - 0, waveVelocity.value - 0, isDamping.checked ? halfLifeToDampingCoefficient(halfLife.value - 0) : 0).toFixed(3);
+    for (const state of Object.values(graphStates))
+	state.setPickup(pickup.value-0 + "%");
 }
 
 function initializeParameterInput() {
@@ -9,6 +11,7 @@ function initializeParameterInput() {
     const isDamping = document.getElementById("parameter-is-damping");
     const halfLife = document.getElementById("parameter-half-life");
     const fundamentalFrequency = document.getElementById("parameter-fundamental-frequency");
+    const pickup = document.getElementById("parameter-pickup");
     onParameterChanged(stringLength, waveVelocity, isDamping, halfLife, fundamentalFrequency);
 }
 
@@ -18,11 +21,13 @@ class GraphState {
     #svg;
     #nodes;
     #edges;
+    #pickupLine;
     #children;
     constructor(id) {
 	this.#svg = document.getElementById(id);
 	this.#nodes = this.#svg.querySelector(".graph-nodes");
 	this.#edges = this.#svg.querySelector(".graph-edges");
+	this.#pickupLine = this.#svg.querySelector(".pickup-line");
 	const start = GraphState.createGraphNode("0%", "50%");
 	const end = GraphState.createGraphNode("100%", "50%");
 	const edge = GraphState.createGraphEdge("0%", "50%", "100%", "50%");
@@ -71,6 +76,11 @@ class GraphState {
 	this.#children.splice(index-1, 3, newEdge);
     }
 
+    setPickup(x) {
+	this.#pickupLine.setAttribute("x1", x);
+	this.#pickupLine.setAttribute("x2", x);
+    }
+    
     onClick(e) {
 	if (e.target.tagName === "circle")
 	    this.removeNode(e.target);
@@ -130,6 +140,7 @@ const graphStates = {};
 function initializeGraph(id) {
     const state = new GraphState(id);
     graphStates[id] = state;
+    state.setPickup(document.getElementById("parameter-pickup").value-0 + "%");
 }
 
 let prevObjectURL = null;
