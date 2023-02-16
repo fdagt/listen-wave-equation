@@ -1,0 +1,4 @@
+htmlmin==0.1.12
+Jinja2==3.1.2
+MarkupSafe==2.1.2
+rjsmin==1.2.1
