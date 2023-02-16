@@ -4,6 +4,7 @@ function onParameterChanged(stringLength, waveVelocity, isDamping, halfLife, fun
     for (const state of Object.values(graphStates))
 	state.setPickup(pickup.value-0 + "%");
     halfLife.disabled = !isDamping.checked;
+    document.getElementById("formula-damp-term").style.display = isDamping.checked ? "inline" : "none";
 }
 
 function initializeParameterInput() {
