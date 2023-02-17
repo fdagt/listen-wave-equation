@@ -16,7 +16,7 @@ valueAt(t){let u=0;let c=0;for(let i=this.#coefAs.length-1;i>=1;--i){const x1=th
 return u*Math.exp(-this.#damp*t);}
 static fundamentalFrequency(stringLength,waveVelocity,damp){return Math.sqrt((waveVelocity*0.5/stringLength)**2-(damp*0.5/Math.PI)**2);}}
 function halfLifeToDampingCoefficient(life){return Math.log(2)/life;}
-function solveWaveEquation(stringLength,waveVelocity,isDamping,damp,pickup,displacement,derivative,clipLength,progressCallback=(p)=>{}){const solver=new WaveSolver(stringLength,waveVelocity,isDamping?damp:0,pickup,displacement,derivative);const wav=new Wave(samplePerSec,Math.floor(samplePerSec*clipLength));const buffer=wav.dataBuffer;let initialSamples=new Array(1000);let amplitude=0.3;for(let i=0;i<initialSamples.length;++i){initialSamples[i]=solver.valueAt(i/samplePerSec);amplitude=Math.max(amplitude,initialSamples[i]);}
+function solveWaveEquation(stringLength,waveVelocity,isDamping,damp,pickup,displacement,derivative,clipLength,progressCallback=(p)=>{}){const solver=new WaveSolver(stringLength,waveVelocity,isDamping?damp:0,pickup,displacement,derivative);const wav=new Wave(samplePerSec,Math.floor(samplePerSec*clipLength));const buffer=wav.dataBuffer;let initialSamples=new Array(1000);let amplitude=0.3;for(let i=0;i<initialSamples.length;++i){initialSamples[i]=solver.valueAt(i/samplePerSec);amplitude=Math.max(amplitude,Math.abs(initialSamples[i]));}
 amplitude*=1.05;for(let i=0;i<initialSamples.length;++i){Wave.writeInt16(buffer,i*2,scaleDisplacement(initialSamples[i],amplitude));}
 initialSamples=null;for(let i=1000,j=1000;i<wav.sampleCount;++i,++j){if(j===5000){progressCallback(i/wav.sampleCount*100+"%");j=0;}
 Wave.writeInt16(buffer,i*2,scaleDisplacement(solver.valueAt(i/samplePerSec),amplitude));}

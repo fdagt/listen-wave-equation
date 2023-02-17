@@ -76,7 +76,7 @@ function solveWaveEquation(stringLength, waveVelocity, isDamping, damp, pickup, 
     let amplitude = 0.3;
     for (let i = 0; i < initialSamples.length; ++i) {
 	initialSamples[i] = solver.valueAt(i / samplePerSec);
-	amplitude = Math.max(amplitude, initialSamples[i]);
+	amplitude = Math.max(amplitude, Math.abs(initialSamples[i]));
     }
     amplitude *= 1.05;
     for (let i = 0; i < initialSamples.length; ++i) {
