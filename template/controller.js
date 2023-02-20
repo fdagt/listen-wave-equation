@@ -1,20 +1,34 @@
 
-function onParameterChanged(stringLength, waveVelocity, isDamping, halfLife, fundamentalFrequency, pickup) {
-    fundamentalFrequency.value = WaveSolver.fundamentalFrequency(stringLength.value - 0, waveVelocity.value - 0, isDamping.checked ? halfLifeToDampingCoefficient(halfLife.value - 0) : 0).toFixed(3);
-    for (const state of Object.values(graphStates))
-	state.setPickup(pickup.value-0 + "%");
-    halfLife.disabled = !isDamping.checked;
-    document.getElementById("formula-damp-term").style.display = isDamping.checked ? "inline" : "none";
-}
-
-function initializeParameterInput() {
+function updateFundamentalFrequency() {
     const stringLength = document.getElementById("parameter-string-length");
     const waveVelocity = document.getElementById("parameter-wave-velocity");
     const isDamping = document.getElementById("parameter-is-damping");
     const halfLife = document.getElementById("parameter-half-life");
     const fundamentalFrequency = document.getElementById("parameter-fundamental-frequency");
+    fundamentalFrequency.value = WaveSolver.fundamentalFrequency(stringLength.value - 0, waveVelocity.value - 0, isDamping.checked ? halfLifeToDampingCoefficient(halfLife.value - 0) : 0).toFixed(3);
+}
+
+function updateGraphs() {
     const pickup = document.getElementById("parameter-pickup");
-    onParameterChanged(stringLength, waveVelocity, isDamping, halfLife, fundamentalFrequency);
+    for (const graph of Object.values(graphStates))
+	graph.setPickup(pickup.value - 0 + "%");
+}
+
+function updateFormula() {
+    const isDamping = document.getElementById("parameter-is-damping");
+    document.getElementById("formula-damp-term").style.display = isDamping.checked ? "inline" : "none";
+}
+
+function updateAbility() {
+    const isDamping = document.getElementById("parameter-is-damping");
+    const halfLife = document.getElementById("parameter-half-life");
+    halfLife.disabled = !isDamping.checked;
+}
+
+function initializeParameterInput() {
+    updateFormula();
+    updateAbility();
+    updateFundamentalFrequency();
 }
 
 const svgNS = "http://www.w3.org/2000/svg";
@@ -142,7 +156,7 @@ const graphStates = {};
 function initializeGraph(id) {
     const state = new GraphState(id);
     graphStates[id] = state;
-    state.setPickup(document.getElementById("parameter-pickup").value-0 + "%");
+    updateGraphs()
 }
 
 let prevObjectURL = null;
