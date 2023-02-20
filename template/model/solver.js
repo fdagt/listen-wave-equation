@@ -24,21 +24,21 @@ function integrateLineGraphSine(points, omega) {
 }
 
 class WaveSolver {
-    #damp;
+    #attenuation;
     #coefAs;
     #coefBs;
     #omegas;
     
-    constructor(stringLength, waveVelocity, damp, pickup, u, ut) {
-	const length = Math.min(30, Math.floor(stringLength * Math.sqrt(samplePerSec**2 + (damp / Math.PI)**2) / waveVelocity));
-	this.#damp = damp;
+    constructor(stringLength, waveVelocity, attenuation, pickup, u, ut) {
+	const length = Math.min(30, Math.floor(stringLength * Math.sqrt(samplePerSec**2 + (attenuation / Math.PI)**2) / waveVelocity));
+	this.#attenuation = attenuation;
 	this.#coefAs = new Array(length);
 	this.#coefBs = new Array(length);
 	this.#omegas = new Array(length);
 	for (let i = 1; i < length; ++i) {
-	    this.#omegas[i] = Math.sqrt((i * Math.PI * waveVelocity / stringLength)**2 - damp**2);
+	    this.#omegas[i] = Math.sqrt((i * Math.PI * waveVelocity / stringLength)**2 - attenuation**2);
 	    this.#coefAs[i] = integrateLineGraphSine(u, i * Math.PI / stringLength) * 2 / stringLength * Math.sin(i * Math.PI * pickup / stringLength);
-	    this.#coefBs[i] = (damp * this.#coefAs[i] / this.#omegas[i] + integrateLineGraphSine(ut, i * Math.PI / stringLength) * 2 / (this.#omegas[i] * stringLength)) * Math.sin(i * Math.PI * pickup / stringLength);
+	    this.#coefBs[i] = (attenuation * this.#coefAs[i] / this.#omegas[i] + integrateLineGraphSine(ut, i * Math.PI / stringLength) * 2 / (this.#omegas[i] * stringLength)) * Math.sin(i * Math.PI * pickup / stringLength);
 	}
     }
 
@@ -56,20 +56,16 @@ class WaveSolver {
 	    c = (t2 - t1) - y2;
 	    u = t2;
 	}
-	return u * Math.exp(- this.#damp * t);
+	return u * Math.exp(- this.#attenuation * t);
     }
 
-    static fundamentalFrequency(stringLength, waveVelocity, damp) {
-	return Math.sqrt((waveVelocity * 0.5 / stringLength)**2 - (damp * 0.5 / Math.PI)**2);
+    static fundamentalFrequency(stringLength, waveVelocity, attenuation) {
+	return Math.sqrt((waveVelocity * 0.5 / stringLength)**2 - (attenuation * 0.5 / Math.PI)**2);
     }
 }
 
-function halfLifeToDampingCoefficient(life) {
-    return Math.log(2) / life;
-}
-
-function solveWaveEquation(stringLength, waveVelocity, isDamping, damp, pickup, displacement, derivative, clipLength, progressCallback=(p)=>{}) {
-    const solver = new WaveSolver(stringLength, waveVelocity, isDamping ? damp : 0, pickup, displacement, derivative);
+function solveWaveEquation(stringLength, waveVelocity, attenuation, pickup, displacement, derivative, clipLength, progressCallback=(p)=>{}) {
+    const solver = new WaveSolver(stringLength, waveVelocity, attenuation, pickup, displacement, derivative);
     const wav = new Wave(samplePerSec, Math.floor(samplePerSec * clipLength));
     const buffer = wav.dataBuffer;
     let initialSamples = new Array(1000);
@@ -98,10 +94,10 @@ function scaleDisplacement(u, amplitude) {
     return Math.floor(32767.5 * u / amplitude - 0.5);
 }
 
-function isValidParameters(stringLength, waveVelocity, isDamping, damp) {
+function isValidParameters(stringLength, waveVelocity, isDamping, attenuation) {
     let valid = true;
     valid &&= stringLength > 0;
     valid &&= waveVelocity > 0;
-    valid &&= !isDamping || Math.PI * waveVelocity / stringLength > damp;
+    valid &&= !isDamping || Math.PI * waveVelocity / stringLength > attenuation;
     return valid;
 }

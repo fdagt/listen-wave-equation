@@ -3,9 +3,9 @@ function updateFundamentalFrequency() {
     const stringLength = document.getElementById("parameter-string-length");
     const waveVelocity = document.getElementById("parameter-wave-velocity");
     const isDamping = document.getElementById("parameter-is-damping");
-    const halfLife = document.getElementById("parameter-half-life");
+    const attenuation = document.getElementById("parameter-attenuation");
     const fundamentalFrequency = document.getElementById("parameter-fundamental-frequency");
-    fundamentalFrequency.value = WaveSolver.fundamentalFrequency(stringLength.value - 0, waveVelocity.value - 0, isDamping.checked ? halfLifeToDampingCoefficient(halfLife.value - 0) : 0).toFixed(3);
+    fundamentalFrequency.value = WaveSolver.fundamentalFrequency(stringLength.value - 0, waveVelocity.value - 0, attenuation.value - 0).toFixed(3);
 }
 
 function updateGraphs() {
@@ -21,8 +21,8 @@ function updateFormula() {
 
 function updateAbility() {
     const isDamping = document.getElementById("parameter-is-damping");
-    const halfLife = document.getElementById("parameter-half-life");
-    halfLife.disabled = !isDamping.checked;
+    const attenuation = document.getElementById("parameter-attenuation");
+    attenuation.disabled = !isDamping.checked;
 }
 
 function initializeParameterInput() {
@@ -164,8 +164,7 @@ function onOutputButtonClicked() {
     const stringLength = document.getElementById("parameter-string-length").value - 0;
     const waveVelocity = document.getElementById("parameter-wave-velocity").value - 0;
     const isDamping = document.getElementById("parameter-is-damping").checked;
-    const halfLife = document.getElementById("parameter-half-life").value - 0;
-    const damp = halfLifeToDampingCoefficient(halfLife);
+    const attenuation = document.getElementById("parameter-attenuation").value - 0;
     const pickup = document.getElementById("parameter-pickup").value - 0;
     const clipLength = document.getElementById("parameter-clip-length").value - 0;
     const displacement = graphStates['initial-condition-displacement-svg'].getPoints().map((p) => [p[0] * stringLength, p[1]]);
@@ -173,14 +172,14 @@ function onOutputButtonClicked() {
     const progressBar = document.getElementById("calculation-progress-bar");
     const player = document.getElementById("audio-player");
     initializeProgressBar(progressBar);
-    if (!isValidParameters(stringLength, waveVelocity, isDamping, damp)) {
+    if (!isValidParameters(stringLength, waveVelocity, isDamping, attenuation)) {
 	progressBar.classList.add("bg-danger");
 	progressBar.style.width = "100%";
 	alert("パラメーターがー不正です。");
 	return;
     }
     progressBar.classList.add("bg-primary");
-    const blob = solveWaveEquation(stringLength, waveVelocity, isDamping, damp, pickup * stringLength / 100, displacement, derivative, clipLength, (progress) => {
+    const blob = solveWaveEquation(stringLength, waveVelocity, isDamping ? attenuation : 0, pickup * stringLength / 100, displacement, derivative, clipLength, (progress) => {
 	progressBar.style.width = progress;
     });
     if (prevObjectURL !== null)
