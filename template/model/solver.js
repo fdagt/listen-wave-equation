@@ -28,7 +28,7 @@ class WaveSolver {
     #coefAs;
     #coefBs;
     #omegas;
-    
+
     constructor(stringLength, waveVelocity, attenuation, pickup, u, ut) {
 	const length = Math.min(30, Math.floor(stringLength * Math.sqrt(samplePerSec**2 + (attenuation / Math.PI)**2) / waveVelocity));
 	this.#attenuation = attenuation;
@@ -37,8 +37,10 @@ class WaveSolver {
 	this.#omegas = new Array(length);
 	for (let i = 1; i < length; ++i) {
 	    this.#omegas[i] = Math.sqrt((i * Math.PI * waveVelocity / stringLength)**2 - attenuation**2);
-	    this.#coefAs[i] = integrateLineGraphSine(u, i * Math.PI / stringLength) * 2 / stringLength * Math.sin(i * Math.PI * pickup / stringLength);
-	    this.#coefBs[i] = (attenuation * this.#coefAs[i] / this.#omegas[i] + integrateLineGraphSine(ut, i * Math.PI / stringLength) * 2 / (this.#omegas[i] * stringLength)) * Math.sin(i * Math.PI * pickup / stringLength);
+	    const a = integrateLineGraphSine(u, i * Math.PI / stringLength) * 2 / stringLength;
+	    const b = attenuation * a / this.#omegas[i] + integrateLineGraphSine(ut, i * Math.PI / stringLength) * 2 / stringLength / this.#omegas[i];
+	    this.#coefAs[i] = a * Math.sin(i * Math.PI * pickup / stringLength)
+	    this.#coefBs[i] = b * Math.sin(i * Math.PI * pickup / stringLength)
 	}
     }
 
