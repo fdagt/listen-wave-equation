@@ -16,7 +16,8 @@ function updateGraphs() {
 
 function updateFormula() {
     const isDamping = document.getElementById("parameter-is-damping");
-    document.getElementById("formula-damp-term").style.display = isDamping.checked ? "inline" : "none";
+    document.getElementById("formula-damping-wave-equation").style.display = isDamping.checked ? "block" : "none";
+    document.getElementById("formula-ideal-wave-equation").style.display = isDamping.checked ? "none" : "block";
 }
 
 function updateAbility() {

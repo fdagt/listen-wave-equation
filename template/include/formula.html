@@ -1,6 +1,6 @@
-<!-- u_tt + 2γ u_t - c**2 u_xx = 0 -->
 <div>
-  <math>
+  <!-- u_tt + 2γ u_t - c**2 u_xx = 0 -->
+  <math id="formula-damping-wave-equation">
     <!-- u_tt -->
     <msub>
       <mi>u</mi>
@@ -9,7 +9,6 @@
 	<mi>t</mi>
       </mrow>
     </msub>
-    <mrow id="formula-damp-term">
     <mo>+</mo>
     <!-- 2γ u_t -->
     <mn>2</mn>
@@ -20,7 +19,33 @@
       <mi>u</mi>
       <mi>t</mi>
     </msub>
-    </mrow>
+    <mo>-</mo>
+    <!-- c**2 u_xx -->
+    <msup>
+      <mi>c</mi>
+      <mn>2</mn>
+    </msup>
+    <mo>&InvisibleTimes;</mo>
+    <msub>
+      <mi>u</mi>
+      <mrow>
+	<mi>x</mi>
+	<mi>x</mi>
+      </mrow>
+    </msub>
+    <mo>=</mo>
+    <mi>0</mi>
+  </math>
+  <!-- u_tt - c**2 u_xx = 0 -->
+  <math id="formula-ideal-wave-equation">
+    <!-- u_tt -->
+    <msub>
+      <mi>u</mi>
+      <mrow>
+	<mi>t</mi>
+	<mi>t</mi>
+      </mrow>
+    </msub>
     <mo>-</mo>
     <!-- c**2 u_xx -->
     <msup>
